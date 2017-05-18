@@ -66,6 +66,21 @@ public class JobData {
      * @param value Value of teh field to search for
      * @return List of all jobs matching the criteria
      */
+
+    public static boolean containsIgnoreCase(String str, String searchStr)     {
+        if(str == null || searchStr == null) return false;
+
+        final int length = searchStr.length();
+        if (length == 0)
+            return true;
+
+        for (int i = str.length() - length; i >= 0; i--) {
+            if (str.regionMatches(true, i, searchStr, 0, length))
+                return true;
+        }
+        return false;
+    }
+
     public static ArrayList<HashMap<String, String>> findByColumnAndValue(String column, String value) {
 
         // load data, if not already loaded
@@ -77,7 +92,7 @@ public class JobData {
 
             String aValue = row.get(column);
 
-            if (aValue.contains(value)) {
+            if (containsIgnoreCase(aValue, value)) {
                 jobs.add(row);
             }
         }
@@ -94,7 +109,8 @@ public class JobData {
 
         for (HashMap<String, String> job : allJobs) {
             for (Map.Entry<String, String> row : job.entrySet()) {
-                if(row.getValue().contains(value)){
+                String rowValue = row.getValue();
+                if(containsIgnoreCase(rowValue, value)){
                     if (!jobs.contains(job)){
                         jobs.add(job);
                     }
